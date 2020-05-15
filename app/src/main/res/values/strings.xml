@@ -4,4 +4,5 @@
     <string name="trends">Trends</string>
     <string name="history">History</string>
     <string name="get_help">Get Help</string>
+    <string name="mood_entry_fragment_tag">mood_entry</string>
 </resources>
