@@ -7,8 +7,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.chelseatroy.canary.R
 
 private val TAB_TITLES = arrayOf(
-        R.string.tab_text_1,
-        R.string.tab_text_2
+        R.string.tags,
+        R.string.trends,
+        R.string.history,
+        R.string.get_help
 )
 
 /**
@@ -21,7 +23,16 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
     override fun getItem(position: Int): Fragment {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1)
+
+        var fragmentToPresent = when (position) {
+            0 -> TagsFragment.newInstance(position + 1)
+            1 -> TrendsFragment.newInstance(position + 1)
+            2 -> HistoryFragment.newInstance(position + 1)
+            3 -> HelpFragment.newInstance(position + 1)
+            else -> HelpFragment.newInstance(position + 1)
+        }
+
+        return fragmentToPresent
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -30,6 +41,6 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
 
     override fun getCount(): Int {
         // Show 2 total pages.
-        return 2
+        return 4
     }
 }

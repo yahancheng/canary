@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Canary</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tags">Tags</string>
+    <string name="trends">Trends</string>
+    <string name="history">History</string>
+    <string name="get_help">Get Help</string>
 </resources>

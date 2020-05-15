@@ -8,15 +8,18 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.viewpager.widget.PagerAdapter
 import com.chelseatroy.canary.ui.main.SectionsPagerAdapter
 
 class MainActivity : AppCompatActivity() {
+    lateinit var sectionsPagerAdapter: PagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
+        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+
+        val viewPager = findViewById(R.id.view_pager) as ViewPager
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
