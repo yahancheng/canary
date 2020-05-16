@@ -23,5 +23,4 @@ class MoodEntryFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_mood_entry, container, false)
     }
 
-
 }

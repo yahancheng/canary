@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Title of a Form"
+        android:text="@string/title_of_a_form"
         android:textFontWeight="6"
         android:textSize="30sp" />
 
@@ -18,13 +18,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Label for an EditText"
+        android:text="@string/label_for_an_edittext"
         android:textSize="20sp" />
 
     <EditText
+        android:id="@+id/first_edit_text"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="You can type here!"
+        android:hint="@string/you_can_type_here"
         android:padding="10dp"
         android:inputType="text"
         android:textSize="20sp" />
@@ -32,13 +33,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Label for an EditText"
+        android:text="@string/label_for_an_edittext"
         android:textSize="20sp" />
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="You can type here!"
+        android:hint="@string/you_can_type_here"
         android:padding="10dp"
         android:inputType="text"
         android:textSize="20sp" />
@@ -46,13 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Label for an EditText"
+        android:text="@string/label_for_an_edittext"
         android:textSize="20sp" />
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="You can type here!"
+        android:hint="@string/you_can_type_here"
         android:padding="10dp"
         android:inputType="text"
         android:textSize="20sp" />

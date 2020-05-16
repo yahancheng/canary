@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Theme.Material.Light.Dialog.NoMinWidth" parent="android:Theme.Material.Light.Dialog">
+    <style name="DialogMaterialTheme" parent="android:Theme.Material.Light.Dialog">
         <item name="android:windowMinWidthMinor">0dip</item>
         <item name="android:windowMinWidthMajor">0dip</item>
     </style>

@@ -1,5 +1,6 @@
 package com.chelseatroy.canary
 
+import android.widget.EditText
 import com.chelseatroy.canary.ui.main.MoodEntryFragment
 import org.junit.Assert.*
 
@@ -12,6 +13,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
+
     @Test
     fun attachesFragmentsToProperTabs() {
         val systemUnderTest = Robolectric.buildActivity(MainActivity::class.java)
