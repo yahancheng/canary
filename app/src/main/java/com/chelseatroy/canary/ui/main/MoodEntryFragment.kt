@@ -9,35 +9,73 @@ import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.chelseatroy.canary.R
 import com.chelseatroy.canary.data.Mood
+import com.chelseatroy.canary.data.MoodEntry
 import com.chelseatroy.canary.data.Pastime
 import com.google.android.material.snackbar.Snackbar
-import kotlin.math.log
 
 
 class MoodEntryFragment : DialogFragment() {
-    /** The system calls this to get the DialogFragment's layout, regardless
-    of whether it's being displayed as a dialog or an embedded fragment. */
     lateinit var currentMood: Mood
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // Inflate the layout to use as dialog or embedded fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_mood_entry, container, false)
     }
 
     override fun onResume() {
         super.onResume()
 
-        val checkboxList = view?.findViewById<LinearLayout>(R.id.activities_checkbox_list)
-        Pastime.values().forEach {
-            val checkity = CheckBox(activity)
-            checkity.setText(it.name)
-            checkboxList?.addView(checkity)
-        }
+        assembleMoodButtons()
+        val checkBoxList = assemblePastimeCheckBoxes()
+        
+        val notesEditText = view?.findViewById<EditText>(R.id.mood_notes)
+        val logMoodButton = view?.findViewById<Button>(R.id.log_mood_button)
 
+        logMoodButton?.setOnClickListener({ view ->
+            if (!this::currentMood.isInitialized) {
+                instructGuestToChooseAMood(view)
+            } else {
+                submitMoodEntry(checkBoxList, notesEditText)
+                dismiss()
+            }
+        })
+    }
+
+    private fun submitMoodEntry(
+        checkBoxList: ArrayList<CheckBox>,
+        notesEditText: EditText?
+    ) {
+        var moodEntry = MoodEntry(currentMood)
+        moodEntry.recentPastimes = ArrayList(
+            checkBoxList
+                .filter { checkBox -> checkBox.isChecked }
+                .map { checkBox -> Pastime.valueOf(checkBox.text.toString()) })
+        moodEntry.notes = notesEditText?.text.toString()
+
+        Log.d("SUBMITTED MOOD ENTRY", moodEntry.toString())
+    }
+
+    private fun instructGuestToChooseAMood(view: View) {
+        val formValidationNotification = Snackbar.make(
+            view,
+            "Please select a mood icon to record your mood!",
+            Snackbar.LENGTH_LONG
+        )
+        formValidationNotification.show()
+    }
+
+    private fun assemblePastimeCheckBoxes(): ArrayList<CheckBox> {
+        val checkBoxLayout = view?.findViewById<LinearLayout>(R.id.pastimes_checkbox_list)
+        val checkBoxList = arrayListOf<CheckBox>()
+        Pastime.values().forEach {
+            val pastimeCheckBox = CheckBox(activity)
+            pastimeCheckBox.setText(it.name)
+            checkBoxLayout?.addView(pastimeCheckBox)
+            checkBoxList.add(pastimeCheckBox)
+        }
+        return checkBoxList
+    }
+
+    private fun assembleMoodButtons() {
         val upset = view?.findViewById<ImageView>(R.id.ic_upset)
         val down = view?.findViewById<ImageView>(R.id.ic_down)
         val neutral = view?.findViewById<ImageView>(R.id.ic_neutral)
@@ -47,25 +85,13 @@ class MoodEntryFragment : DialogFragment() {
 
         for ((index, button) in moodButtonCollection.withIndex()) {
             button?.setOnClickListener({ view ->
-                for (button in moodButtonCollection) { button?.setBackgroundColor(resources.getColor(R.color.design_default_color_background)) }
+                for (button in moodButtonCollection) {
+                    button?.setBackgroundColor(resources.getColor(R.color.design_default_color_background))
+                }
                 view.setBackgroundColor(resources.getColor(R.color.colorAccent));
                 currentMood = Mood.values()[index]
             })
         }
-
-        //make the mood images clickable and exclusive
-
-        val logMoodButton = view?.findViewById<Button>(R.id.log_mood_button)
-        logMoodButton?.setOnClickListener({ view ->
-            if (!this::currentMood.isInitialized) {
-                val formValidationNotification = Snackbar.make(
-                    view,
-                    "Please select a mood icon to record your mood!",
-                    Snackbar.LENGTH_LONG
-                )
-                formValidationNotification.show()
-            }
-        })
     }
 
 }

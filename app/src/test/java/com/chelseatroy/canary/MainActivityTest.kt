@@ -12,7 +12,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class MainPastimeTest {
+class MainActivityTest {
 
     @Test
     fun attachesFragmentsToProperTabs() {
