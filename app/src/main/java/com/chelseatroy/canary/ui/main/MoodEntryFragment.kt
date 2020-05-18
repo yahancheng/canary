@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.chelseatroy.canary.R
-import com.chelseatroy.canary.data.Mood
-import com.chelseatroy.canary.data.MoodEntry
-import com.chelseatroy.canary.data.Pastime
+import com.chelseatroy.canary.data.*
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -26,7 +24,7 @@ class MoodEntryFragment : DialogFragment() {
 
         assembleMoodButtons()
         val checkBoxList = assemblePastimeCheckBoxes()
-        
+
         val notesEditText = view?.findViewById<EditText>(R.id.mood_notes)
         val logMoodButton = view?.findViewById<Button>(R.id.log_mood_button)
 
@@ -40,6 +38,7 @@ class MoodEntryFragment : DialogFragment() {
         })
     }
 
+
     private fun submitMoodEntry(
         checkBoxList: ArrayList<CheckBox>,
         notesEditText: EditText?
@@ -51,16 +50,28 @@ class MoodEntryFragment : DialogFragment() {
                 .map { checkBox -> Pastime.valueOf(checkBox.text.toString()) })
         moodEntry.notes = notesEditText?.text.toString()
 
-        Log.d("SUBMITTED MOOD ENTRY", moodEntry.toString())
+        Log.i("SUBMITTED MOOD ENTRY", moodEntry.toString())
+
+        val databaseHelper = MoodEntrySQLiteDBHelper(activity)
+        databaseHelper.save(moodEntry)
     }
 
     private fun instructGuestToChooseAMood(view: View) {
-        val formValidationNotification = Snackbar.make(
+        val formValidationMessage = Snackbar.make(
             view,
             "Please select a mood icon to record your mood!",
             Snackbar.LENGTH_LONG
         )
-        formValidationNotification.show()
+        formValidationMessage.show()
+    }
+
+    private fun informGuestOfMoodEntryCreation(view: View) {
+        val confirmationMessage = Snackbar.make(
+            view,
+            "We've logged your mood!",
+            Snackbar.LENGTH_LONG
+        )
+        confirmationMessage.show()
     }
 
     private fun assemblePastimeCheckBoxes(): ArrayList<CheckBox> {
@@ -83,12 +94,14 @@ class MoodEntryFragment : DialogFragment() {
         val elated = view?.findViewById<ImageView>(R.id.ic_elated)
         val moodButtonCollection = listOf(upset, down, neutral, coping, elated)
 
+        val unselectedColor = resources.getColor(R.color.design_default_color_background)
+        val selectedColor = resources.getColor(R.color.colorAccent)
+
         for ((index, button) in moodButtonCollection.withIndex()) {
             button?.setOnClickListener({ view ->
-                for (button in moodButtonCollection) {
-                    button?.setBackgroundColor(resources.getColor(R.color.design_default_color_background))
-                }
-                view.setBackgroundColor(resources.getColor(R.color.colorAccent));
+                for (button in moodButtonCollection) button?.setBackgroundColor(unselectedColor);
+
+                view.setBackgroundColor(selectedColor);
                 currentMood = Mood.values()[index]
             })
         }
