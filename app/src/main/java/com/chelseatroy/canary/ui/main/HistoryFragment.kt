@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chelseatroy.canary.R
 import com.chelseatroy.canary.data.Mood
 import com.chelseatroy.canary.data.MoodEntry
 import com.chelseatroy.canary.data.MoodEntryAdapter
 import com.chelseatroy.canary.data.MoodEntrySQLiteDBHelper
+
 
 class HistoryFragment : Fragment() {
     lateinit var recyclerView: RecyclerView
@@ -20,6 +22,8 @@ class HistoryFragment : Fragment() {
 
     lateinit var databaseHelper: MoodEntrySQLiteDBHelper
     lateinit var moodEntries: ArrayList<MoodEntry>
+
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +53,14 @@ class HistoryFragment : Fragment() {
         recyclerViewAdapter = MoodEntryAdapter(activity?.applicationContext!!, moodEntries)
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity?.applicationContext!!)
+
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)!!
+        swipeRefreshLayout.setOnRefreshListener {
+            fetchMoodData()
+            recyclerViewAdapter.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
+
     }
 
     fun fetchMoodData() {
@@ -63,6 +75,7 @@ class HistoryFragment : Fragment() {
             Log.i("NO MOOD ENTRIES", "Fetched data and found none.")
         } else {
             Log.i("MOOD ENTRIES FETCHED!", "Fetched data and found mood entries.")
+            moodEntries.clear()
 
             while (cursor.moveToNext()) {
                 val nextMood = MoodEntry(

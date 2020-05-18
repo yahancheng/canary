@@ -16,11 +16,17 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mood_entry_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/my_entries_label"
-        tools:listitem="@layout/item_list_mood_entry" />
+        android:layout_below="@+id/my_entries_label">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mood_entry_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_list_mood_entry" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
