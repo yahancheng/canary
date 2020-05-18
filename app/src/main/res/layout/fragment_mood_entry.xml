@@ -99,6 +99,8 @@
             android:layout_margin="10dp"
             android:background="@color/colorPrimary"
             android:text="@string/record_my_mood"
+            android:textAllCaps="false"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:textColor="@color/design_default_color_on_primary" />
 

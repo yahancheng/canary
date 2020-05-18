@@ -9,5 +9,7 @@
     <string name="what_have_you_done_lately">What have you done lately?</string>
     <string name="is_there_anything_else_you_want_to_remember_about_this_moment">Is there anything else you want to remember about this moment?</string>
     <string name="i_noticed_that">I noticed that...</string>
-    <string name="record_my_mood">Record my mood!</string>
+    <string name="record_my_mood">Record My Mood!</string>
+    <string name="recent_activities">Recent Activities:</string>
+    <string name="lately_i_ve_felt">Lately I\'ve felt...</string>
 </resources>
