@@ -5,12 +5,40 @@ import org.junit.Test
 
 class MoodEntryTest {
     @Test
-    fun toString_stringifiesMoodEntry() {
-        val moodEntry = MoodEntry(Mood.ELATED)
-        moodEntry.recentPastimes = arrayListOf(Pastime.EATING, Pastime.READING, Pastime.SLEEP)
-        moodEntry.notes = "Had a decent day!"
+    fun getFormattedLogTime_putsMoodEntryTimeInLegibleFormat() {
+        assertEquals("Monday, 18 May, 2020, 10:36 AM",
+            MoodEntry.getFormattedLogTime(1589816172396))
+    }
 
-        assertEquals("Mood Entry(mood: ELATED, notes: Had a decent day!, pastimes: [EATING, READING, SLEEP]",
+    @Test
+    fun formatForDatabase_putsMoodEntryPastimesInString_withEmptyDefault() {
+        assertEquals("READING, SLEEP",
+            MoodEntry.formatForDatabase(arrayListOf(Pastime.READING, Pastime.SLEEP)))
+        assertEquals("",
+            MoodEntry.formatForDatabase(ArrayList()))
+
+    }
+
+    @Test
+    fun formatForView_putsMoodEntryPastimesInString_withADefault() {
+        assertEquals("READING, SLEEP",
+            MoodEntry.formatForView(arrayListOf(Pastime.READING, Pastime.SLEEP)))
+        assertEquals("None :(",
+            MoodEntry.formatForView(ArrayList()))
+    }
+
+    @Test
+    fun toString_stringifiesMoodEntry() {
+        val moodEntry = MoodEntry(
+            Mood.ELATED,
+            1589816172396,
+            "Had a decent day!",
+            "EATING, READING, SLEEP"
+        )
+
+        assertEquals("Mood Entry(loggedAt: Monday, 18 May, 2020, 10:36 AM, mood: ELATED, notes: Had a decent day!, pastimes: [EATING, READING, SLEEP]",
         moodEntry.toString())
     }
+
+
 }
