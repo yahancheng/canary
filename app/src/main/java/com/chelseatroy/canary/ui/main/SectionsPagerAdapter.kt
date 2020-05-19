@@ -10,7 +10,7 @@ private val TAB_TITLES = arrayOf(
         R.string.tags,
         R.string.trends,
         R.string.history,
-        R.string.get_help
+        R.string.profile
 )
 
 /**

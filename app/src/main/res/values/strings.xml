@@ -3,7 +3,7 @@
     <string name="tags">Tags</string>
     <string name="trends">Trends</string>
     <string name="history">History</string>
-    <string name="get_help">Get Help</string>
+    <string name="profile">Profile</string>
     <string name="mood_entry_fragment_tag">mood_entry</string>
     <string name="how_are_you_doing">How are you doing?</string>
     <string name="what_have_you_done_lately">What have you done lately?</string>
