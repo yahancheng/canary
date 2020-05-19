@@ -17,17 +17,11 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
     val context = context
 
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
-        val createDatabaseQuery = "CREATE TABLE ${MOOD_ENTRY_TABLE_NAME} " +
-                "(${MOOD_ENTRY_COLUMN_ID} INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "${MOOD_ENTRY_COLUMN_MOOD} TEXT, " +
-                "${MOOD_ENTRY_COLUMN_LOGGED_AT} INTEGER, " +
-                "${MOOD_ENTRY_COLUMN_NOTES} TEXT, " +
-                "${MOOD_ENTRY_COLUMN_PASTIMES} TEXT);"
-        sqLiteDatabase.execSQL(createDatabaseQuery)
+        sqLiteDatabase.execSQL(createMoodEntriesTableQuery)
     }
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS $MOOD_ENTRY_TABLE_NAME")
+        sqLiteDatabase.execSQL(dropMoodEntriesTableQuery)
         onCreate(sqLiteDatabase)
     }
 
@@ -65,6 +59,14 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
         return cursor
     }
 
+    fun create() {
+        onCreate(writableDatabase)
+    }
+
+    fun clear() {
+        writableDatabase.execSQL("DROP TABLE IF EXISTS $MOOD_ENTRY_TABLE_NAME")
+    }
+
     companion object {
         private const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "canary_database"
@@ -82,5 +84,15 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
             MOOD_ENTRY_COLUMN_PASTIMES,
             MOOD_ENTRY_COLUMN_NOTES
         )
+
+        val createMoodEntriesTableQuery = "CREATE TABLE ${MOOD_ENTRY_TABLE_NAME} " +
+                "(${MOOD_ENTRY_COLUMN_ID} INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "${MOOD_ENTRY_COLUMN_MOOD} TEXT, " +
+                "${MOOD_ENTRY_COLUMN_LOGGED_AT} INTEGER, " +
+                "${MOOD_ENTRY_COLUMN_NOTES} TEXT, " +
+                "${MOOD_ENTRY_COLUMN_PASTIMES} TEXT);"
+
+        val dropMoodEntriesTableQuery = "DROP TABLE IF EXISTS $MOOD_ENTRY_TABLE_NAME"
+
     }
 }
