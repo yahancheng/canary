@@ -13,7 +13,7 @@ import com.chelseatroy.canary.R
 /**
  * A placeholder fragment containing a simple view.
  */
-class HelpFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
 
@@ -48,8 +48,8 @@ class HelpFragment : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): HelpFragment {
-            return HelpFragment().apply {
+        fun newInstance(sectionNumber: Int): ProfileFragment {
+            return ProfileFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }

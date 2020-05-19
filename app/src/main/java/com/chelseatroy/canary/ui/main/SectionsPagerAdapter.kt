@@ -28,8 +28,8 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
             0 -> TagsFragment.newInstance(position + 1)
             1 -> TrendsFragment.newInstance(position + 1)
             2 -> HistoryFragment.newInstance(position + 1)
-            3 -> HelpFragment.newInstance(position + 1)
-            else -> HelpFragment.newInstance(position + 1)
+            3 -> ProfileFragment.newInstance(position + 1)
+            else -> ProfileFragment.newInstance(position + 1)
         }
 
         return fragmentToPresent

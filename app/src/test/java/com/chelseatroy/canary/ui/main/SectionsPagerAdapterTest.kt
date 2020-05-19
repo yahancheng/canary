@@ -50,6 +50,6 @@ class SectionsPagerAdapterTest {
         assertEquals(HistoryFragment::class, thirdTabFragment::class)
 
         val fourthTabFragment = systemUnderTest.getItem(3)
-        assertEquals(HelpFragment::class, fourthTabFragment::class)
+        assertEquals(ProfileFragment::class, fourthTabFragment::class)
     }
 }

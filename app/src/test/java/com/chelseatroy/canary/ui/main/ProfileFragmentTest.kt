@@ -11,13 +11,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class HelpFragmentTest {
+class ProfileFragmentTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Test
     fun fragmentLaunches() {
-        val scenario = launchFragment<HelpFragment>()
+        val scenario = launchFragment<ProfileFragment>()
         scenario.onFragment { fragment ->
             val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.section_label)
             assertEquals("Hello world from section: 1", sectionlabel.text)
