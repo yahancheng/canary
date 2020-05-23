@@ -29,7 +29,7 @@ class MoodEntryTest {
 
     @Test
     fun toString_stringifiesMoodEntry() {
-        val moodEntry = MoodEntry(
+        var moodEntry = MoodEntry(
             Mood.ELATED,
             1589816172396,
             "Had a decent day!",

@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         viewPager = findViewById(R.id.view_pager) as ViewPager
         viewPager.adapter = sectionsPagerAdapter
+
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
                 fragmentTransaction.remove(existingMoodEntryFragment)
             }
             fragmentTransaction.addToBackStack(null)
+
             val dialogFragment = MoodEntryFragment()
             dialogFragment.show(fragmentTransaction, getString(R.string.mood_entry_fragment_tag))
         }

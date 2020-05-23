@@ -46,47 +46,22 @@ class HistoryFragment : Fragment() {
         recyclerView = view?.findViewById(R.id.mood_entry_list)!!
 
         databaseHelper = MoodEntrySQLiteDBHelper(activity)
-        moodEntries = ArrayList<MoodEntry>()
+        this.moodEntries = databaseHelper.fetchMoodData()
 
-        fetchMoodData()
-
-        recyclerViewAdapter = MoodEntryAdapter(activity?.applicationContext!!, moodEntries)
+        recyclerViewAdapter = MoodEntryAdapter(activity?.applicationContext!!, this.moodEntries)
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(activity?.applicationContext!!)
 
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)!!
         swipeRefreshLayout.setOnRefreshListener {
-            fetchMoodData()
+            this.moodEntries.clear()
+
+            this.moodEntries.addAll(databaseHelper.fetchMoodData())
+            Log.d("SWIPED MOODENT SIZE: ", this.moodEntries.size.toString())
             recyclerViewAdapter.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }
 
-    }
-
-    fun fetchMoodData() {
-        val cursor = databaseHelper.listMoodEntries()
-
-        val fromMoodColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_MOOD)
-        val fromNotesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_NOTES)
-        val fromLoggedAtColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_LOGGED_AT)
-        val fromPastimesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_PASTIMES)
-
-        if(cursor.getCount() == 0) {
-            Log.i("NO MOOD ENTRIES", "Fetched data and found none.")
-        } else {
-            Log.i("MOOD ENTRIES FETCHED!", "Fetched data and found mood entries.")
-            moodEntries.clear()
-
-            while (cursor.moveToNext()) {
-                val nextMood = MoodEntry(
-                    Mood.valueOf(cursor.getString(fromMoodColumn)),
-                    cursor.getLong(fromLoggedAtColumn),
-                    cursor.getString(fromNotesColumn),
-                    cursor.getString(fromPastimesColumn)
-                )
-                moodEntries.add(nextMood)
-            }
-        }
     }
 
     companion object {

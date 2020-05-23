@@ -16,6 +16,7 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
 ) {
     val context = context
 
+    //region Plumbing
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         sqLiteDatabase.execSQL(createMoodEntriesTableQuery)
     }
@@ -32,11 +33,14 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
         values.put(MOOD_ENTRY_COLUMN_MOOD, moodEntry.mood.toString())
         values.put(MOOD_ENTRY_COLUMN_LOGGED_AT, moodEntry.loggedAt)
         values.put(MOOD_ENTRY_COLUMN_NOTES, moodEntry.notes)
-        values.put(MOOD_ENTRY_COLUMN_PASTIMES, MoodEntry.formatForDatabase(moodEntry.recentPastimes))
+        values.put(
+            MOOD_ENTRY_COLUMN_PASTIMES,
+            MoodEntry.formatForDatabase(moodEntry.recentPastimes)
+        )
 
         val newRowId = database.insert(MOOD_ENTRY_TABLE_NAME, null, values)
 
-        if (newRowId == -1.toLong() ) {
+        if (newRowId == -1.toLong()) {
             Log.wtf("SQLITE INSERTION FAILED", "We don't know why")
         } else {
             Log.i("MOOD ENTRY SAVED!", "Saved in row ${newRowId}: ${moodEntry.toString()}")
@@ -66,6 +70,40 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
     fun clear() {
         writableDatabase.execSQL("DROP TABLE IF EXISTS $MOOD_ENTRY_TABLE_NAME")
     }
+    //endregion
+
+    //region Porcelain
+
+    fun fetchMoodData(): ArrayList<MoodEntry> {
+        var moodEntries = ArrayList<MoodEntry>()
+        val cursor = listMoodEntries()
+
+        val fromMoodColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_MOOD)
+        val fromNotesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_NOTES)
+        val fromLoggedAtColumn =
+            cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_LOGGED_AT)
+        val fromPastimesColumn =
+            cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_PASTIMES)
+
+        if (cursor.getCount() == 0) {
+            Log.i("NO MOOD ENTRIES", "Fetched data and found none.")
+        } else {
+            Log.i("MOOD ENTRIES FETCHED!", "Fetched data and found mood entries.")
+            while (cursor.moveToNext()) {
+                val nextMood = MoodEntry(
+                    Mood.valueOf(cursor.getString(fromMoodColumn)),
+                    cursor.getLong(fromLoggedAtColumn),
+                    cursor.getString(fromNotesColumn),
+                    cursor.getString(fromPastimesColumn)
+                )
+                moodEntries.add(nextMood)
+            }
+        }
+        return moodEntries
+    }
+
+
+    //endregion
 
     companion object {
         private const val DATABASE_VERSION = 1
