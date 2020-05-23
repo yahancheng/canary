@@ -3,6 +3,7 @@ package com.chelseatroy.canary.ui.main
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.ScatterData
 import com.github.mikephil.charting.data.ScatterDataSet
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 
 
 class TrendsFragment : Fragment() {
@@ -22,6 +25,7 @@ class TrendsFragment : Fragment() {
     lateinit var scatterPlot: ScatterChart
     lateinit var moodEntries: List<MoodEntry>
     lateinit var databaseHelper: MoodEntrySQLiteDBHelper
+    lateinit var markerView: ScatterplotMarkerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +58,12 @@ class TrendsFragment : Fragment() {
         val dataSet = ArrayList<Entry>()
 
         for ((index, entry) in moodEntries.withIndex()) {
-            dataSet.add(Entry(xPositions.get(index), getYPositionFor(entry), getMoodIcon(entry)))
+            dataSet.add(
+                Entry(
+                    xPositions.get(index),
+                    getYPositionFor(entry),
+                    getMoodIcon(entry),
+                    MoodEntry.getFormattedLogTime(entry.loggedAt)))
         }
 
         val scatterDataSet = ScatterDataSet(dataSet, "")
@@ -66,12 +75,30 @@ class TrendsFragment : Fragment() {
         scatterPlot.axisLeft.isEnabled = false
         scatterPlot.xAxis.isEnabled = false
         scatterPlot.description.text = ""
+        scatterPlot.legend.isEnabled = false
         scatterPlot.setBackgroundColor(activity?.resources!!.getColor(R.color.canaryBackgroundColor)!!)
 
         scatterPlot.setTouchEnabled(true)
         scatterPlot.setPinchZoom(true)
 
         scatterPlot.setNoDataText("No moods entered yet!")
+
+        markerView = ScatterplotMarkerView(activity, R.layout.view_marker_scatterplot)
+        scatterPlot.setMarkerView(markerView)
+
+
+        scatterPlot.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(
+                e: Entry,
+                h: Highlight?
+            ) {
+                scatterPlot.highlightValue(h)
+                markerView.moodEntryLabel.text = e.data.toString()
+            }
+
+            override fun onNothingSelected() {}
+        })
+
     }
 
     private fun getMoodIcon(moodEntry: MoodEntry): BitmapDrawable {
