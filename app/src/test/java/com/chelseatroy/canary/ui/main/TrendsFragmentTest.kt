@@ -19,8 +19,8 @@ class TrendsFragmentTest {
     fun fragmentLaunches() {
         val scenario = launchFragment<TrendsFragment>()
         scenario.onFragment { fragment ->
-            val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.section_label)
-            assertEquals("Hello world from section: 1", sectionlabel.text)
+            val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.trends_label)
+            assertEquals("Trends in My Mood", sectionlabel.text)
         }
     }
 }

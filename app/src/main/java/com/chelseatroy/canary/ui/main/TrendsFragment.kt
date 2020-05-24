@@ -3,7 +3,6 @@ package com.chelseatroy.canary.ui.main
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import com.chelseatroy.canary.R
 import com.chelseatroy.canary.data.Mood
 import com.chelseatroy.canary.data.MoodEntry
 import com.chelseatroy.canary.data.MoodEntrySQLiteDBHelper
+import com.chelseatroy.canary.data.MoodEntryScatterAnalysis
 import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.ScatterData
@@ -26,6 +26,8 @@ class TrendsFragment : Fragment() {
     lateinit var moodEntries: List<MoodEntry>
     lateinit var databaseHelper: MoodEntrySQLiteDBHelper
     lateinit var markerView: ScatterplotMarkerView
+
+    lateinit var scatterAnalysis: MoodEntryScatterAnalysis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,8 @@ class TrendsFragment : Fragment() {
         databaseHelper = MoodEntrySQLiteDBHelper(activity)
         moodEntries = databaseHelper.fetchMoodData()
 
+        scatterAnalysis = MoodEntryScatterAnalysis()
+
         if (moodEntries.isNotEmpty()) {
             moodEntries = moodEntries.reversed().toList()
             arrangeScatterPlot()
@@ -53,7 +57,7 @@ class TrendsFragment : Fragment() {
     }
 
     private fun arrangeScatterPlot() {
-        var xPositions = getXPositionsFor(moodEntries)
+        var xPositions = scatterAnalysis.getXPositionsFor(moodEntries)
 
         val dataSet = ArrayList<Entry>()
 
@@ -61,8 +65,8 @@ class TrendsFragment : Fragment() {
             dataSet.add(
                 Entry(
                     xPositions.get(index),
-                    getYPositionFor(entry),
-                    getMoodIcon(entry),
+                    scatterAnalysis.getYPositionFor(entry),
+                    getIconFor(entry),
                     MoodEntry.getFormattedLogTime(entry.loggedAt)))
         }
 
@@ -101,7 +105,7 @@ class TrendsFragment : Fragment() {
 
     }
 
-    private fun getMoodIcon(moodEntry: MoodEntry): BitmapDrawable {
+    private fun getIconFor(moodEntry: MoodEntry): BitmapDrawable {
         var face = getResources().getDrawable(R.drawable.neutral)
         when (moodEntry.mood) {
             Mood.UPSET -> face = getResources().getDrawable(R.drawable.upset);
@@ -114,30 +118,6 @@ class TrendsFragment : Fragment() {
         val imageresource =
             BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 30, 30, true))
         return imageresource
-    }
-
-    private fun getYPositionFor(moodEntry: MoodEntry): Float {
-        var height = 0f
-        when (moodEntry.mood) {
-            Mood.UPSET -> height = 1f
-            Mood.DOWN -> height = 2f
-            Mood.NEUTRAL -> height = 3f
-            Mood.COPING -> height = 4f
-            Mood.ELATED -> height = 5f
-        }
-        return height
-    }
-
-    private fun getXPositionsFor(moodEntries: List<MoodEntry>): List<Float> {
-        val latestPoint = moodEntries.last().loggedAt
-        val earliestPoint = moodEntries.first().loggedAt
-        val diff = latestPoint - earliestPoint
-
-        if (diff == 0L) {
-            return arrayListOf(0f) // If we don't do this, a singleton list with 0L in it becomes [NaN] for some reason
-        } else {
-            return moodEntries.map { (it.loggedAt.toFloat() - earliestPoint) / diff } as ArrayList<Float>
-        }
     }
 
     companion object {
