@@ -24,4 +24,9 @@ class MoodEntryScatterAnalysis() {
             return moodEntries.map { (it.loggedAt.toFloat() - earliestPoint) / diff } as ArrayList<Float>
         }
     }
+
+    fun commentOn(moodEntries: List<MoodEntry>): String {
+        return "This text box is pretty useless so far. It would be great if this text box contained some useful information " +
+                "about the trends in my mood, wouldn't it?"
+    }
 }

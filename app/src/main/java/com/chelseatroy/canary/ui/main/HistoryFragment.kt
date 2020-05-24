@@ -57,7 +57,6 @@ class HistoryFragment : Fragment() {
             this.moodEntries.clear()
 
             this.moodEntries.addAll(databaseHelper.fetchMoodData())
-            Log.d("SWIPED MOODENT SIZE: ", this.moodEntries.size.toString())
             recyclerViewAdapter.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         }

@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity(), Updatable {
     }
 
     override fun onDismissal() {
-        Log.i("ONDISMISS", "CALLED!")
         val currentFragment =
             supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem());
         currentFragment?.onResume()

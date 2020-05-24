@@ -3,10 +3,10 @@ package com.chelseatroy.canary.ui.main
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.chelseatroy.canary.R
 import com.chelseatroy.canary.data.Mood
@@ -24,6 +24,8 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 class TrendsFragment : Fragment() {
 
     lateinit var scatterPlot: ScatterChart
+    lateinit var trendCommentary: TextView
+
     lateinit var moodEntries: List<MoodEntry>
     lateinit var databaseHelper: MoodEntrySQLiteDBHelper
     lateinit var markerView: ScatterplotMarkerView
@@ -45,6 +47,7 @@ class TrendsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         scatterPlot = view?.findViewById(R.id.line_chart)!!
+        trendCommentary = view?.findViewById(R.id.trend_commentary)!!
 
         databaseHelper = MoodEntrySQLiteDBHelper(activity)
 
@@ -60,6 +63,7 @@ class TrendsFragment : Fragment() {
             moodEntries = moodEntries.reversed().toList()
             arrangeScatterPlot()
         }
+        trendCommentary.text = scatterAnalysis.commentOn(moodEntries)
     }
 
     private fun arrangeScatterPlot() {
@@ -73,7 +77,9 @@ class TrendsFragment : Fragment() {
                     xPositions.get(index),
                     scatterAnalysis.getYPositionFor(entry),
                     getIconFor(entry),
-                    MoodEntry.getFormattedLogTime(entry.loggedAt)))
+                    MoodEntry.getFormattedLogTime(entry.loggedAt)
+                )
+            )
         }
 
         val scatterDataSet = ScatterDataSet(dataSet, "")

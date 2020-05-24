@@ -33,4 +33,35 @@ class MoodEntryScatterAnalysisTest {
 
         assertEquals(arrayListOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f), systemUnderTest.getXPositionsFor(regularlySpacedMoodEntries))
     }
+
+    @Test
+    fun comments_whenThereArentManyMoodEntries_encourageMoreMoodLogging() {
+        fail("If the person hasn't logged their mood much, " +
+                "it wouldn't be very accurate to try to do any analysis." +
+                "So choose a minimum number of entries you think you need to make an analysis " +
+                "and produce a message encouraging more logging if there are fewer entries than that.")
+    }
+
+    @Test
+    fun comments_whenMoodIsImproving_mentionThatMoodIsImproving() {
+        fail("If the person's mood, in general, is better lately than it was earlier in the week " +
+                "produce a message mentioning it. " +
+                "You get to decide how you want to measure this.")
+    }
+
+    @Test
+    fun comments_whenMoodIsDeclining_mentionThatMoodIsDeclining() {
+        fail("If the person's mood, in general, is not as good lately as it was earlier in the week " +
+                "produce a message mentioning it. " +
+                "You get to decide how you want to measure this.")
+    }
+
+    @Test
+    fun comments_whenThereIsOneOutlierMood_mentionAnyNotesFromThatMood() {
+        fail("If the person's mood, in general, is stable, and there is ONE outlier, " +
+                "produce a message containing the notes for that mood." +
+                "You get to decide how you want to go about this.")
+    }
+
+
 }
