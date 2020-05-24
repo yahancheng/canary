@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
     context,
@@ -47,17 +49,26 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
         }
     }
 
-    fun listMoodEntries(): Cursor {
+    fun listMoodEntries(limitToPastWeek: Boolean = false): Cursor {
         val database: SQLiteDatabase = MoodEntrySQLiteDBHelper(context).getReadableDatabase()
 
+        var filterOnThis: String? = null
+        var usingTheseValues: Array<String>? = null
+
+        if (limitToPastWeek) {
+            val nowInMilliseconds = Calendar.getInstance().timeInMillis.toInt()
+            filterOnThis = LOGGED_WITHIN
+            usingTheseValues = arrayOf("${nowInMilliseconds - ONE_WEEK_AGO_IN_MILLISECONDS}")
+        }
+
         val cursor: Cursor = database.query(
-            MoodEntrySQLiteDBHelper.MOOD_ENTRY_TABLE_NAME,
+            MOOD_ENTRY_TABLE_NAME,
             allMoodColumns,
+            filterOnThis,
+            usingTheseValues,
             null,
             null,
-            null,
-            null,
-            MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_LOGGED_AT + " DESC"
+            MOOD_ENTRY_COLUMN_LOGGED_AT + " DESC"
         )
         Log.i("DATA FETCHED!", "Number of mood entries returned: " + cursor.getCount())
         return cursor
@@ -74,14 +85,14 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
 
     //region Porcelain
 
-    fun fetchMoodData(): ArrayList<MoodEntry> {
+    fun fetchMoodData(limitToPastWeek: Boolean = false): ArrayList<MoodEntry> {
         var moodEntries = ArrayList<MoodEntry>()
-        val cursor = listMoodEntries()
+        val cursor = listMoodEntries(limitToPastWeek = limitToPastWeek)
 
         val fromMoodColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_MOOD)
         val fromNotesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_NOTES)
         val fromLoggedAtColumn =
-            cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_LOGGED_AT)
+            cursor.getColumnIndex(MOOD_ENTRY_COLUMN_LOGGED_AT)
         val fromPastimesColumn =
             cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_PASTIMES)
 
@@ -131,6 +142,9 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
                 "${MOOD_ENTRY_COLUMN_PASTIMES} TEXT);"
 
         val dropMoodEntriesTableQuery = "DROP TABLE IF EXISTS $MOOD_ENTRY_TABLE_NAME"
+
+        const val ONE_WEEK_AGO_IN_MILLISECONDS = 604800000
+        const val LOGGED_WITHIN = "${MOOD_ENTRY_COLUMN_LOGGED_AT} >= ?"
 
     }
 }

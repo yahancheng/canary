@@ -43,7 +43,6 @@ class TrendsFragment : Fragment() {
     }
 
     override fun onResume() {
-        Log.d("ONRESUME", "Called!")
         super.onResume()
         scatterPlot = view?.findViewById(R.id.line_chart)!!
 
@@ -51,7 +50,9 @@ class TrendsFragment : Fragment() {
 
         moodEntries = ArrayList()
         (moodEntries as ArrayList<MoodEntry>).clear()
-        (moodEntries as ArrayList<MoodEntry>).addAll(databaseHelper.fetchMoodData())
+        (moodEntries as ArrayList<MoodEntry>).addAll(
+            databaseHelper.fetchMoodData(limitToPastWeek = true)
+        )
 
         scatterAnalysis = MoodEntryScatterAnalysis()
 
