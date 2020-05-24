@@ -3,6 +3,7 @@ package com.chelseatroy.canary.ui.main
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,11 +43,15 @@ class TrendsFragment : Fragment() {
     }
 
     override fun onResume() {
+        Log.d("ONRESUME", "Called!")
         super.onResume()
         scatterPlot = view?.findViewById(R.id.line_chart)!!
 
         databaseHelper = MoodEntrySQLiteDBHelper(activity)
-        moodEntries = databaseHelper.fetchMoodData()
+
+        moodEntries = ArrayList()
+        (moodEntries as ArrayList<MoodEntry>).clear()
+        (moodEntries as ArrayList<MoodEntry>).addAll(databaseHelper.fetchMoodData())
 
         scatterAnalysis = MoodEntryScatterAnalysis()
 
@@ -74,6 +79,8 @@ class TrendsFragment : Fragment() {
         scatterDataSet.setDrawValues(false)
 
         scatterPlot.data = ScatterData(scatterDataSet)
+        scatterPlot.notifyDataSetChanged()
+        scatterPlot.invalidate()
 
         scatterPlot.axisRight.isEnabled = false
         scatterPlot.axisLeft.isEnabled = false

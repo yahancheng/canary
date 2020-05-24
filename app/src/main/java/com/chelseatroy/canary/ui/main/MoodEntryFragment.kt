@@ -1,5 +1,6 @@
 package com.chelseatroy.canary.ui.main
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,12 +9,17 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.chelseatroy.canary.R
-import com.chelseatroy.canary.data.*
+import com.chelseatroy.canary.Updatable
+import com.chelseatroy.canary.data.Mood
+import com.chelseatroy.canary.data.MoodEntry
+import com.chelseatroy.canary.data.MoodEntrySQLiteDBHelper
+import com.chelseatroy.canary.data.Pastime
 import com.google.android.material.snackbar.Snackbar
 
 
 class MoodEntryFragment : DialogFragment() {
     lateinit var currentMood: Mood
+    lateinit var dismissListener: Updatable
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_mood_entry, container, false)
@@ -38,6 +44,12 @@ class MoodEntryFragment : DialogFragment() {
         })
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (dismissListener != null) {
+            dismissListener.onDismissal()
+        }
+    }
 
     private fun submitMoodEntry(
         checkBoxList: ArrayList<CheckBox>,

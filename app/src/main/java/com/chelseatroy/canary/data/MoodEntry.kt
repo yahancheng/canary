@@ -45,9 +45,14 @@ class MoodEntry(mood: Mood) {
 
         @JvmStatic
         fun hydrateFromDatabase(pastimes: String): ArrayList<Pastime> {
-            return ArrayList(
-                pastimes.split(", ")
-                    .map { Pastime.valueOf(it) })
+            if (pastimes.isNotEmpty()) {
+                return ArrayList(
+                    pastimes.split(", ")
+                        .map { Pastime.valueOf(it) })
+            } else {
+                return ArrayList<Pastime>()
+            }
+
         }
 
         fun formatForView(pastimes: ArrayList<Pastime>): String {
