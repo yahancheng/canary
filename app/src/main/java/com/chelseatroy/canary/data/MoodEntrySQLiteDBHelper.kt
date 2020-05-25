@@ -21,6 +21,17 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
     //region Plumbing
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         sqLiteDatabase.execSQL(createMoodEntriesTableQuery)
+
+        save(MoodEntry(Mood.UPSET, 1589842800000, "Rough day", "EXERCISE, SLEEP"), sqLiteDatabase)
+        save(MoodEntry(Mood.DOWN, 1589896800000, "Still not so happy", "EXERCISE"), sqLiteDatabase)
+        save(MoodEntry(Mood.NEUTRAL, 1589911200000, "A little better", "SLEEP"), sqLiteDatabase)
+        save(MoodEntry(Mood.UPSET, 1589997600000, "Another rough day", "EXERCISE"), sqLiteDatabase)
+        save(MoodEntry(Mood.COPING, 1590084000000, "Much better", "SOCIALIZING"), sqLiteDatabase)
+        save(MoodEntry(Mood.NEUTRAL, 1590170400000, "Lots of work", "SLEEP"), sqLiteDatabase)
+        save(MoodEntry(Mood.COPING, 1590256800000, "Got some sunshine", "EXERCISE"), sqLiteDatabase)
+        save(MoodEntry(Mood.ELATED, 1590271200000, "Got some praise!", "SOCIALIZING"), sqLiteDatabase)
+        save(MoodEntry(Mood.NEUTRAL, 1590357600000, "Wish I could hug my friends", "SLEEP"), sqLiteDatabase)
+        save(MoodEntry(Mood.NEUTRAL, 1590422400000, "Work again", "EXERCISE"), sqLiteDatabase)
     }
 
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, i: Int, i1: Int) {
@@ -29,7 +40,17 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
     }
 
     fun save(moodEntry: MoodEntry) {
-        val database: SQLiteDatabase = MoodEntrySQLiteDBHelper(context).getWritableDatabase()
+        save(moodEntry, null)
+    }
+
+    fun save(
+        moodEntry: MoodEntry,
+        database: SQLiteDatabase?
+    ) {
+        var confirmedDatabase = database
+        if(confirmedDatabase == null) {
+            confirmedDatabase = MoodEntrySQLiteDBHelper(context).getWritableDatabase()
+        }
         val values = ContentValues()
 
         values.put(MOOD_ENTRY_COLUMN_MOOD, moodEntry.mood.toString())
@@ -40,7 +61,7 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
             MoodEntry.formatForDatabase(moodEntry.recentPastimes)
         )
 
-        val newRowId = database.insert(MOOD_ENTRY_TABLE_NAME, null, values)
+        val newRowId = confirmedDatabase?.insert(MOOD_ENTRY_TABLE_NAME, null, values)
 
         if (newRowId == -1.toLong()) {
             Log.wtf("SQLITE INSERTION FAILED", "We don't know why")
@@ -112,7 +133,6 @@ class MoodEntrySQLiteDBHelper(context: Context?) : SQLiteOpenHelper(
         }
         return moodEntries
     }
-
 
     //endregion
 
