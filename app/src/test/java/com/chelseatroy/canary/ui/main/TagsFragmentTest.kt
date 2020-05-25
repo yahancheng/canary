@@ -19,8 +19,8 @@ class TagsFragmentTest {
     fun fragmentLaunches() {
         val scenario = launchFragment<TagsFragment>()
         scenario.onFragment { fragment ->
-            val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.section_label)
-            assertEquals("Hello world from section: 1", sectionlabel.text)
+            val tagsLabel = fragment.view!!.findViewById<TextView>(R.id.tags_label)
+            assertEquals("Pie Charts Whatever", tagsLabel.text)
         }
     }
 }

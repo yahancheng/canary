@@ -26,7 +26,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
         // Return a PlaceholderFragment (defined as a static inner class below).
 
         var fragmentToPresent = when (position) {
-            0 -> TagsFragment.newInstance(position + 1)
+            0 -> TagsFragment.newInstance()
             1 -> TrendsFragment.newInstance(position + 1)
             2 -> HistoryFragment.newInstance(position + 1)
             3 -> ProfileFragment.newInstance(position + 1)
