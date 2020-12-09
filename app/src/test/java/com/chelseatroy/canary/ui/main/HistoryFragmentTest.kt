@@ -1,11 +1,10 @@
 package com.chelseatroy.canary.ui.main
 
 import org.junit.Assert.*
-import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.chelseatroy.canary.R
+import com.chelseatroy.canary.data.MoodEntryAdapter
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,11 +15,10 @@ class HistoryFragmentTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun fragmentLaunches() {
+    fun fragmentSetsUpRecyclerViewAdapter() {
         val scenario = launchFragment<HistoryFragment>()
         scenario.onFragment { fragment ->
-            val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.section_label)
-            assertEquals("Hello world from section: 1", sectionlabel.text)
+            assertEquals(MoodEntryAdapter::class, fragment.recyclerView.adapter!!::class)
         }
     }
 }

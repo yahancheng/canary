@@ -6,21 +6,21 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chelseatroy.canary.R
+import com.chelseatroy.canary.data.PastimeAdapter
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class HelpFragmentTest {
+class ProfileFragmentTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun fragmentLaunches() {
-        val scenario = launchFragment<HelpFragment>()
+    fun fragmentSetsUpProfileRecyclerViewAdapter() {
+        val scenario = launchFragment<ProfileFragment>()
         scenario.onFragment { fragment ->
-            val sectionlabel = fragment.view!!.findViewById<TextView>(R.id.section_label)
-            assertEquals("Hello world from section: 1", sectionlabel.text)
+            assertEquals(PastimeAdapter::class, fragment.recyclerView.adapter!!::class)
         }
     }
 }

@@ -2,5 +2,14 @@
 <resources>
     <color name="colorPrimary">#1DB954</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="colorPie1">#04A828</color>
+    <color name="colorPie2">#FF8CB4</color>
+    <color name="colorPie3">#4E9ADC</color>
+    <color name="colorPie4">#F8E27F</color>
+    <color name="colorPie5">#00ACC1</color>
+    <color name="colorPie6">#EC6804</color>
+    <color name="colorPie7">#8E93ED</color>
+    <color name="colorProfileBackground">#C3FDD4</color>
+    <color name="canaryBackgroundColor">#E2F4F6</color>
 </resources>

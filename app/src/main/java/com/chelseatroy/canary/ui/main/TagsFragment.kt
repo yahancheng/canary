@@ -1,59 +1,115 @@
 package com.chelseatroy.canary.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.chelseatroy.canary.R
+import com.chelseatroy.canary.data.Mood
+import com.chelseatroy.canary.data.MoodEntry
+import com.chelseatroy.canary.data.MoodEntryPieAnalysis
+import com.chelseatroy.canary.data.MoodEntrySQLiteDBHelper
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import kotlinx.android.synthetic.main.fragment_tags.*
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class TagsFragment : Fragment() {
+    lateinit var moodEntries: List<MoodEntry>
+    lateinit var databaseHelper: MoodEntrySQLiteDBHelper
 
-    private lateinit var pageViewModel: PageViewModel
+    lateinit var pieAnalysis: MoodEntryPieAnalysis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_main, container, false)
-        val textView: TextView = root.findViewById(R.id.section_label)
-        pageViewModel.text.observe(this, Observer<String> {
-            textView.text = it
-        })
+        val root = inflater.inflate(R.layout.fragment_tags, container, false)
         return root
     }
 
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
+    override fun onResume() {
+        super.onResume()
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
+        databaseHelper = MoodEntrySQLiteDBHelper(activity)
+
+        moodEntries = ArrayList()
+        (moodEntries as ArrayList<MoodEntry>).clear()
+        (moodEntries as ArrayList<MoodEntry>).addAll(
+            databaseHelper.fetchMoodData()
+        )
+
+        pieAnalysis = MoodEntryPieAnalysis()
+
+
+        if (moodEntries.isNotEmpty()) {
+            moodEntries = moodEntries.reversed().toList()
+            assemblePieChart(
+                moodsPieChart,
+                getString(R.string.moods),
+                pieAnalysis.getMoodsFrom(moodEntries),
+                listColors()
+            )
+            assemblePieChart(
+                pieChart = activitiesPieChart,
+                name = getString(R.string.pastimes),
+                pieSections = pieAnalysis.getActivitiesFrom(moodEntries),
+                listColors = listColors()
+            )
+        }
+    }
+
+    fun listColors(): ArrayList<Int> {
+        val listColors = ArrayList<Int>()
+        listColors.add(resources.getColor(R.color.colorAccent))
+        listColors.add(resources.getColor(R.color.colorPie1))
+        listColors.add(resources.getColor(R.color.colorPie2))
+        listColors.add(resources.getColor(R.color.colorPie3))
+        listColors.add(resources.getColor(R.color.colorPie4))
+        listColors.add(resources.getColor(R.color.colorPie5))
+        listColors.add(resources.getColor(R.color.colorPie6))
+        listColors.add(resources.getColor(R.color.colorPie7))
+        return listColors
+    }
+
+    fun assemblePieChart(
+        pieChart: PieChart,
+        name: String,
+        pieSections: ArrayList<PieEntry>,
+        listColors: ArrayList<Int>
+    ) {
+        moodsPieChart.setUsePercentValues(true)
+
+        pieChart.description.text = name
+        pieChart.description.textSize = 20f
+        pieChart.isDrawHoleEnabled = true
+
+        val pieDataSet = PieDataSet(pieSections, "")
+        pieDataSet.colors = listColors
+
+        val pieData = PieData(pieDataSet)
+        pieData.setValueTextSize(20f)
+        pieChart.data = pieData
+
+        pieChart.setUsePercentValues(true)
+        pieChart.setEntryLabelColor(R.color.colorPrimaryDark)
+        pieChart.legend.isEnabled = false
+
+        pieChart.animateY(3000, Easing.EaseInOutQuad)
+    }
+
+    companion object {
         @JvmStatic
-        fun newInstance(sectionNumber: Int): TagsFragment {
-            return TagsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
+        fun newInstance(): TagsFragment {
+            return TagsFragment()
         }
     }
 }

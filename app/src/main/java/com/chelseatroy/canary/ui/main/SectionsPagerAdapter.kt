@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.chelseatroy.canary.R
+import com.chelseatroy.canary.ui.main.HistoryFragment.Companion.newInstance
+import androidx.viewpager.widget.PagerAdapter
 
 private val TAB_TITLES = arrayOf(
         R.string.tags,
         R.string.trends,
         R.string.history,
-        R.string.get_help
+        R.string.profile
 )
 
 /**
@@ -25,11 +27,11 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
         // Return a PlaceholderFragment (defined as a static inner class below).
 
         var fragmentToPresent = when (position) {
-            0 -> TagsFragment.newInstance(position + 1)
+            0 -> TagsFragment.newInstance()
             1 -> TrendsFragment.newInstance(position + 1)
             2 -> HistoryFragment.newInstance(position + 1)
-            3 -> HelpFragment.newInstance(position + 1)
-            else -> HelpFragment.newInstance(position + 1)
+            3 -> ProfileFragment.newInstance(position + 1)
+            else -> ProfileFragment.newInstance(position + 1)
         }
 
         return fragmentToPresent
@@ -40,7 +42,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
     }
 
     override fun getCount(): Int {
-        // Show 2 total pages.
+
         return 4
     }
 }

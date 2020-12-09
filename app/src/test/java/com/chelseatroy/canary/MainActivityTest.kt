@@ -14,6 +14,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
 
+
     @Test
     fun attachesFragmentsToProperTabs() {
         val systemUnderTest = Robolectric.buildActivity(MainActivity::class.java)

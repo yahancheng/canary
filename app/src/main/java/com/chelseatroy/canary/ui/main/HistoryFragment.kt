@@ -1,59 +1,101 @@
 package com.chelseatroy.canary.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chelseatroy.canary.R
+import com.chelseatroy.canary.data.Mood
+import com.chelseatroy.canary.data.MoodEntry
+import com.chelseatroy.canary.data.MoodEntryAdapter
+import com.chelseatroy.canary.data.MoodEntrySQLiteDBHelper
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 class HistoryFragment : Fragment() {
+    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerViewAdapter: MoodEntryAdapter
 
-    private lateinit var pageViewModel: PageViewModel
+    lateinit var databaseHelper: MoodEntrySQLiteDBHelper
+    lateinit var moodEntries: ArrayList<MoodEntry>
+
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_main, container, false)
-        val textView: TextView = root.findViewById(R.id.section_label)
-        pageViewModel.text.observe(this, Observer<String> {
-            textView.text = it
-        })
+        val root = inflater.inflate(R.layout.fragment_history, container, false)
         return root
     }
 
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
+    override fun onResume() {
+        super.onResume()
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
+        // Because of the !! non-null assertion, the app is going to crash if it can't find this id.
+        // I am OK with this because if that happens, the developer will catch that when they run
+        // the app to look at the list (so the likelihood that this would go uncaught is very low).
+        recyclerView = view?.findViewById(R.id.mood_entry_list)!!
+
+        databaseHelper = MoodEntrySQLiteDBHelper(activity)
+
+        moodEntries = ArrayList<MoodEntry>()
+
+        fetchMoodData()
+
+        recyclerViewAdapter = MoodEntryAdapter(activity?.applicationContext!!, moodEntries)
+
+        recyclerView.adapter = recyclerViewAdapter
+        recyclerView.layoutManager = LinearLayoutManager(activity?.applicationContext!!)
+
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)!!
+        swipeRefreshLayout.setOnRefreshListener {
+
+            fetchMoodData()
+            recyclerViewAdapter.notifyDataSetChanged()
+            swipeRefreshLayout.isRefreshing = false
+        }
+
+    }
+
+    fun fetchMoodData() {
+        val cursor = databaseHelper.listMoodEntries()
+
+        val fromMoodColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_MOOD)
+        val fromNotesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_NOTES)
+        val fromLoggedAtColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_LOGGED_AT)
+        val fromPastimesColumn = cursor.getColumnIndex(MoodEntrySQLiteDBHelper.MOOD_ENTRY_COLUMN_PASTIMES)
+
+        if(cursor.getCount() == 0) {
+            Log.i("NO MOOD ENTRIES", "Fetched data and found none.")
+        } else {
+            Log.i("MOOD ENTRIES FETCHED!", "Fetched data and found mood entries.")
+            moodEntries.clear()
+
+            while (cursor.moveToNext()) {
+                val nextMood = MoodEntry(
+                    Mood.valueOf(cursor.getString(fromMoodColumn)),
+                    cursor.getLong(fromLoggedAtColumn),
+                    cursor.getString(fromNotesColumn),
+                    cursor.getString(fromPastimesColumn)
+                )
+                moodEntries.add(nextMood)
+            }
+        }
+    }
+
+    companion object {
         @JvmStatic
         fun newInstance(sectionNumber: Int): HistoryFragment {
-            return HistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
+            return HistoryFragment()
         }
     }
 }
