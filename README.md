@@ -2,7 +2,7 @@
 
 ## Upgrade features:
 - [x] Added Login page
-- [x] UPdated Profile section let users add/delete activities
+- [x] Updated Profile section let users add/delete activities
 - [x] Added Pastime (activity) table to store users' inputs in SQLiteDB
 - [x] Unit tests for features
 - [x] Updated pie charts in TAGS section
